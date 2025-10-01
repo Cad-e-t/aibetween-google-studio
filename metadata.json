@@ -1,0 +1,5 @@
+{
+  "name": "React Video Editor",
+  "description": "A web-based video editor interface built with React and Tailwind CSS, featuring a timeline, clip manipulation, and a video player.",
+  "requestFramePermissions": []
+}

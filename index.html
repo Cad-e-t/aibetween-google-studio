@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Video Editor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              border: 'hsl(240 3.7% 15.9%)',
+              'editor-bg': 'hsl(240 5.9% 10%)',
+              'editor-panel': 'hsl(240 4.8% 12%)',
+              primary: 'hsl(206, 92%, 53%)',
+              'primary-foreground': 'hsl(210 40% 98%)',
+              destructive: 'hsl(0 84.2% 60.2%)',
+              foreground: 'hsl(210 40% 98%)',
+              'muted-foreground': 'hsl(240 3.8% 46.1%)',
+              'timeline-bg': 'hsl(240, 4.8%, 14%)',
+              'timeline-track': 'hsl(240, 4.8%, 13%)',
+              'clip-bg': 'hsl(206, 92%, 60%)',
+              'clip-border': 'hsl(206, 92%, 70%)',
+              playhead: 'hsl(198, 93%, 60%)',
+              'playhead-glow': 'hsl(198, 93%, 60%)',
+            },
+          },
+        },
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "react/": "https://aistudiocdn.com/react@^19.1.1/"
+  }
+}
+</script>
+</head>
+  <body class="bg-editor-bg">
+    <div id="root"></div>
+  </body>
+</html>
