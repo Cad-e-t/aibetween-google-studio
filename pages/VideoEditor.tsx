@@ -25,6 +25,12 @@ const VideoEditor: React.FC = () => {
     isPlaying: false,
   });
 
+  const activeClip = state.clips.find(
+    (clip) =>
+      state.currentTime >= clip.startTime &&
+      state.currentTime < clip.startTime + (clip.trimEnd - clip.trimStart)
+  );
+
   useEffect(() => {
     const videoElement = document.querySelector('video');
     const handleMetadata = () => {
@@ -49,29 +55,44 @@ const VideoEditor: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.clips]);
 
-  const handleTimeUpdate = (time: number) => {
-    setState((prev) => ({ ...prev, currentTime: time }));
+  const handlePlayerTimeUpdate = (videoTime: number) => {
+    if (activeClip) {
+      const newTimelineTime = (videoTime - activeClip.trimStart) + activeClip.startTime;
+      const clipDuration = activeClip.trimEnd - activeClip.trimStart;
+      const clipEndTimeOnTimeline = activeClip.startTime + clipDuration;
+      
+      if (newTimelineTime >= clipEndTimeOnTimeline) {
+         setState(prev => ({...prev, isPlaying: false, currentTime: clipEndTimeOnTimeline }));
+      } else {
+        setState(prev => ({ ...prev, currentTime: newTimelineTime }));
+      }
+    }
   };
 
   const handlePlayPause = () => {
+    // If we are at the end of the timeline, and there's a clip there, seek to start of that clip
+    if (state.currentTime === state.duration && activeClip) {
+      handleSeek(activeClip.startTime);
+    }
     setState((prev) => ({ ...prev, isPlaying: !prev.isPlaying }));
   };
 
   const handleSeek = (time: number) => {
     setState((prev) => ({ ...prev, currentTime: time, isPlaying: false }));
-    videoPlayerRef.current?.seekTo(time);
+    const clipAtTime = state.clips.find(
+      (clip) => time >= clip.startTime && time < clip.startTime + (clip.trimEnd - clip.trimStart)
+    );
+
+    if (clipAtTime) {
+      const playerTimeToSeek = (time - clipAtTime.startTime) + clipAtTime.trimStart;
+      videoPlayerRef.current?.seekTo(playerTimeToSeek);
+    }
   };
 
   const handleClipsUpdate = (clips: VideoClip[]) => {
     const newDuration = clips.reduce((max, clip) => Math.max(max, clip.startTime + (clip.trimEnd - clip.trimStart)), 30);
     setState((prev) => ({ ...prev, clips, duration: newDuration }));
   };
-
-  const activeClip = state.clips.find(
-    (clip) =>
-      state.currentTime >= clip.startTime &&
-      state.currentTime < clip.startTime + (clip.trimEnd - clip.trimStart)
-  );
   
   const playerTime = activeClip
     ? (state.currentTime - activeClip.startTime) + activeClip.trimStart
@@ -86,13 +107,13 @@ const VideoEditor: React.FC = () => {
         </div>
       </header>
 
-      <div className="flex flex-col gap-2 px-2 pt-2 flex-1 overflow-hidden min-h-0">
+      <div className="flex flex-col gap-2 px-2 flex-1 overflow-hidden min-h-0">
         <div className="flex-1 flex items-center justify-center min-h-0">
           <VideoPlayer
             ref={videoPlayerRef}
             currentTime={playerTime}
-            isPlaying={state.isPlaying}
-            onTimeUpdate={handleTimeUpdate}
+            isPlaying={state.isPlaying && !!activeClip}
+            onTimeUpdate={handlePlayerTimeUpdate}
             onPlayPause={handlePlayPause}
             videoUrl={activeClip?.url || ""}
           />

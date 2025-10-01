@@ -104,7 +104,7 @@ export const Timeline: React.FC<TimelineProps> = ({
 
       <div
         ref={timelineRef}
-        className="relative h-24 bg-timeline-bg overflow-x-auto overflow-y-hidden cursor-crosshair flex-shrink-0"
+        className="relative h-28 bg-timeline-bg overflow-x-auto overflow-y-hidden cursor-crosshair flex-shrink-0"
         onClick={handleTimelineClick}
       >
         <div className="relative h-full" style={{ width: `${timelineWidth}px` }}>
