@@ -77,7 +77,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
     };
 
     return (
-      <div className="flex flex-col items-center gap-4 bg-editor-panel p-4 rounded-lg flex-shrink min-h-0 shadow-md w-full max-w-3xl">
+      <div className="flex flex-col items-center gap-4 bg-editor-panel p-4 rounded-lg flex-shrink-0 min-h-0 shadow-md w-full max-w-xl">
         <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden shadow-inner">
           <video
             key={videoUrl}
