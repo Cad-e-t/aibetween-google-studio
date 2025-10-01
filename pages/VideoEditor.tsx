@@ -86,15 +86,17 @@ const VideoEditor: React.FC = () => {
         </div>
       </header>
 
-      <div className="flex flex-col gap-2 p-2 flex-1 overflow-hidden min-h-0">
-        <VideoPlayer
-          ref={videoPlayerRef}
-          currentTime={playerTime}
-          isPlaying={state.isPlaying}
-          onTimeUpdate={handleTimeUpdate}
-          onPlayPause={handlePlayPause}
-          videoUrl={activeClip?.url || ""}
-        />
+      <div className="flex flex-col gap-2 px-2 pt-2 flex-1 overflow-hidden min-h-0">
+        <div className="flex-1 flex items-center justify-center min-h-0">
+          <VideoPlayer
+            ref={videoPlayerRef}
+            currentTime={playerTime}
+            isPlaying={state.isPlaying}
+            onTimeUpdate={handleTimeUpdate}
+            onPlayPause={handlePlayPause}
+            videoUrl={activeClip?.url || ""}
+          />
+        </div>
 
         <Timeline
           clips={state.clips}
