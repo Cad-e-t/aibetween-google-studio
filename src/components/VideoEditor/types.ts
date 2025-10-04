@@ -1,4 +1,3 @@
-
 export interface VideoClip {
   id: string;
   url: string;

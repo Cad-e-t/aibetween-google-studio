@@ -10,40 +10,52 @@
         theme: {
           extend: {
             colors: {
-              border: 'hsl(240 3.7% 15.9%)',
-              'editor-bg': 'hsl(240 5.9% 10%)',
-              'editor-panel': 'hsl(240 4.8% 12%)',
-              primary: 'hsl(206, 92%, 53%)',
-              'primary-foreground': 'hsl(210 40% 98%)',
-              destructive: 'hsl(0 84.2% 60.2%)',
-              foreground: 'hsl(210 40% 98%)',
-              'muted-foreground': 'hsl(240 3.8% 46.1%)',
-              'timeline-bg': 'hsl(240, 4.8%, 14%)',
-              'timeline-track': 'hsl(240, 4.8%, 13%)',
-              'clip-bg': 'hsl(206, 92%, 60%)',
-              'clip-border': 'hsl(206, 92%, 70%)',
-              playhead: 'hsl(198, 93%, 60%)',
-              'playhead-glow': 'hsl(198, 93%, 60%)',
-            },
-          },
-        },
+              background: 'hsl(var(--background))',
+              foreground: 'hsl(var(--foreground))',
+              card: 'hsl(var(--card))',
+              'card-foreground': 'hsl(var(--card-foreground))',
+              popover: 'hsl(var(--popover))',
+              'popover-foreground': 'hsl(var(--popover-foreground))',
+              primary: 'hsl(var(--primary))',
+              'primary-foreground': 'hsl(var(--primary-foreground))',
+              secondary: 'hsl(var(--secondary))',
+              'secondary-foreground': 'hsl(var(--secondary-foreground))',
+              muted: 'hsl(var(--muted))',
+              'muted-foreground': 'hsl(var(--muted-foreground))',
+              accent: 'hsl(var(--accent))',
+              'accent-foreground': 'hsl(var(--accent-foreground))',
+              destructive: 'hsl(var(--destructive))',
+              'destructive-foreground': 'hsl(var(--destructive-foreground))',
+              border: 'hsl(var(--border))',
+              input: 'hsl(var(--input))',
+              ring: 'hsl(var(--ring))',
+              'editor-bg': 'hsl(var(--editor-bg))',
+              'editor-panel': 'hsl(var(--editor-panel))',
+              'timeline-bg': 'hsl(var(--timeline-bg))',
+              'timeline-track': 'hsl(var(--timeline-track))',
+              'clip-bg': 'hsl(var(--clip-bg))',
+              'clip-border': 'hsl(var(--clip-border))',
+              playhead: 'hsl(var(--playhead))',
+              'playhead-glow': 'hsl(var(--playhead-glow))',
+            }
+          }
+        }
       }
     </script>
-  <script type="importmap">
+<script type="importmap">
 {
   "imports": {
-    "react": "https://aistudiocdn.com/react@^19.1.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
-    "react/": "https://aistudiocdn.com/react@^19.1.1/"
+    "vite": "https://aistudiocdn.com/vite@^7.1.9",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.0.4",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
   }
 }
 </script>
-<!-- Add Babel for in-browser JSX/TSX transformation -->
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
   <body class="bg-editor-bg">
     <div id="root"></div>
-    <!-- Change script type to text/babel so Babel can process it -->
-    <script type="text/babel" data-presets="react,typescript" data-type="module" src="index.tsx"></script>
+    <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>

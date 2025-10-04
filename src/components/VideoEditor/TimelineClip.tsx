@@ -1,4 +1,3 @@
-
 import React, { useRef, useState } from "react";
 import { VideoClip } from "./types";
 import { GripVerticalIcon, XIcon } from "../Icons";
@@ -10,9 +9,11 @@ interface TimelineClipProps {
   onUpdate: (clip: VideoClip) => void;
   onRemove: (clipId: string) => void;
   pixelsPerSecond: number;
+  trackHeight: number;
+  trackGap: number;
 }
 
-export const TimelineClip: React.FC<TimelineClipProps> = ({ clip, onUpdate, onRemove, pixelsPerSecond }) => {
+export const TimelineClip: React.FC<TimelineClipProps> = ({ clip, onUpdate, onRemove, pixelsPerSecond, trackHeight, trackGap }) => {
   const clipRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isResizingStart, setIsResizingStart] = useState(false);
@@ -26,25 +27,34 @@ export const TimelineClip: React.FC<TimelineClipProps> = ({ clip, onUpdate, onRe
     e.stopPropagation();
 
     const startX = e.clientX;
+    const startY = e.clientY;
     const originalStartTime = clip.startTime;
     const originalTrimStart = clip.trimStart;
     const originalTrimEnd = clip.trimEnd;
-    const originalClipDuration = originalTrimEnd - originalTrimStart;
+    const originalTrackIndex = clip.trackIndex;
 
     if (action === "move") setIsDragging(true);
     if (action === "trim-start") setIsResizingStart(true);
     if (action === "trim-end") setIsResizingEnd(true);
 
     const handleMouseMove = (e: MouseEvent) => {
-      const deltaX = e.clientX - startX;
-      const deltaTime = deltaX / pixelsPerSecond;
-
+      
       if (action === "move") {
+        const deltaX = e.clientX - startX;
+        const deltaTime = deltaX / pixelsPerSecond;
+
+        const deltaY = e.clientY - startY;
+        const trackDelta = Math.round(deltaY / (trackHeight + trackGap));
+        const newTrackIndex = Math.max(0, originalTrackIndex + trackDelta);
+
         onUpdate({
           ...clip,
           startTime: Math.max(0, originalStartTime + deltaTime),
+          trackIndex: newTrackIndex,
         });
       } else if (action === "trim-start") {
+        const deltaX = e.clientX - startX;
+        const deltaTime = deltaX / pixelsPerSecond;
         const newTrimStart = Math.max(0, Math.min(originalTrimEnd - 0.1, originalTrimStart + deltaTime));
         const trimDelta = newTrimStart - originalTrimStart;
         onUpdate({
@@ -53,6 +63,8 @@ export const TimelineClip: React.FC<TimelineClipProps> = ({ clip, onUpdate, onRe
           startTime: originalStartTime + trimDelta,
         });
       } else if (action === "trim-end") {
+        const deltaX = e.clientX - startX;
+        const deltaTime = deltaX / pixelsPerSecond;
         const newTrimEnd = Math.max(originalTrimStart + 0.1, Math.min(clip.duration, originalTrimEnd + deltaTime));
         onUpdate({
           ...clip,
@@ -76,12 +88,14 @@ export const TimelineClip: React.FC<TimelineClipProps> = ({ clip, onUpdate, onRe
   return (
     <div
       ref={clipRef}
-      className={`absolute top-2 bottom-2 bg-clip-bg/80 backdrop-blur-sm border-2 border-clip-border rounded-md overflow-hidden cursor-grab active:cursor-grabbing transition-shadow group ${
+      className={`absolute bg-clip-bg/80 backdrop-blur-sm border-2 border-clip-border rounded-md overflow-hidden cursor-grab active:cursor-grabbing transition-shadow group ${
         isDragging || isResizingStart || isResizingEnd ? "shadow-lg shadow-primary/50 z-20" : "z-10"
       }`}
       style={{
         left: `${clip.startTime * pixelsPerSecond}px`,
         width: `${clipWidth}px`,
+        top: `${clip.trackIndex * (trackHeight + trackGap) + trackGap / 2}px`,
+        height: `${trackHeight}px`,
       }}
       onMouseDown={(e) => handleMouseDown(e, "move")}
     >

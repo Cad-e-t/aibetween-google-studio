@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, forwardRef, useImperativeHandle, useState } from "react";
 import { PlayIcon, PauseIcon } from "../Icons";
 import { Button } from "../ui/Button";

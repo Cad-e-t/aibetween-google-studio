@@ -1,0 +1,55 @@
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+:root {
+  --background: 210 15% 7%;
+  --foreground: 210 20% 98%;
+
+  --card: 210 15% 9%;
+  --card-foreground: 210 20% 98%;
+
+  --popover: 210 15% 9%;
+  --popover-foreground: 210 20% 98%;
+
+  --primary: 199 89% 48%;
+  --primary-foreground: 210 20% 98%;
+
+  --secondary: 210 15% 13%;
+  --secondary-foreground: 210 20% 98%;
+
+  --muted: 210 15% 13%;
+  --muted-foreground: 210 10% 60%;
+
+  --accent: 199 89% 48%;
+  --accent-foreground: 210 20% 98%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 210 20% 98%;
+
+  --border: 210 15% 15%;
+  --input: 210 15% 15%;
+  --ring: 199 89% 48%;
+
+  --radius: 0.5rem;
+
+  /* Video Editor Specific */
+  --editor-bg: 210 15% 7%;
+  --editor-panel: 210 15% 9%;
+  --timeline-bg: 210 15% 11%;
+  --timeline-track: 210 15% 13%;
+  --clip-bg: 210 15% 20%;
+  --clip-border: 199 89% 48%;
+  --playhead: 199 89% 48%;
+  --playhead-glow: 199 89% 48%;
+  --time-ruler: 210 10% 40%;
+  --selection: 199 89% 48%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}

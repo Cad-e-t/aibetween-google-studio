@@ -1,4 +1,4 @@
-
+/// <reference types="vite/client" />
 import React, { useState, useRef, useEffect } from "react";
 import { VideoPlayer, VideoPlayerHandle } from "../components/VideoEditor/VideoPlayer";
 import { Timeline } from "../components/VideoEditor/Timeline";
@@ -7,6 +7,7 @@ import { FilmIcon } from '../components/Icons';
 
 const VideoEditor: React.FC = () => {
   const videoPlayerRef = useRef<VideoPlayerHandle>(null);
+  const [zoom, setZoom] = useState(0.2);
   const [state, setState] = useState<TimelineState>({
     clips: [
       {
@@ -16,20 +17,40 @@ const VideoEditor: React.FC = () => {
         duration: 596,
         startTime: 0,
         trimStart: 0,
-        trimEnd: 30,
+        trimEnd: 596, // Use full clip duration
         trackIndex: 0,
       },
     ],
     currentTime: 0,
-    duration: 30,
+    duration: 596, // Duration of the whole timeline
     isPlaying: false,
   });
 
-  const activeClip = state.clips.find(
+  const clipsAtCurrentTime = state.clips.filter(
     (clip) =>
       state.currentTime >= clip.startTime &&
       state.currentTime < clip.startTime + (clip.trimEnd - clip.trimStart)
   );
+
+  const activeClip =
+    clipsAtCurrentTime.length > 0
+      ? clipsAtCurrentTime.reduce((prev, current) =>
+          prev.trackIndex > current.trackIndex ? prev : current
+        )
+      : undefined;
+
+  useEffect(() => {
+    // Fix: Per Gemini API guidelines, the API key must be obtained from environment variables
+    // and the user should not be prompted for it. For Vite, this is `import.meta.env.VITE_API_KEY`.
+    // The key is assumed to be available in the execution context.
+    const apiKey = import.meta.env.VITE_API_KEY;
+    // In a real implementation, the Gemini client would be initialized here, e.g.:
+    // if (apiKey) {
+    //   const ai = new GoogleGenAI({ apiKey });
+    //   // ...
+    // }
+  }, []);
+
 
   useEffect(() => {
     const videoElement = document.querySelector('video');
@@ -93,6 +114,43 @@ const VideoEditor: React.FC = () => {
     const newDuration = clips.reduce((max, clip) => Math.max(max, clip.startTime + (clip.trimEnd - clip.trimStart)), 30);
     setState((prev) => ({ ...prev, clips, duration: newDuration }));
   };
+
+  const handleAddClip = () => {
+    setState((prev) => {
+      const { clips } = prev;
+      const targetTrackIndex = 0;
+
+      const clipsOnTrack = clips.filter(c => c.trackIndex === targetTrackIndex);
+      const lastClipEndTime = clipsOnTrack.reduce((maxTime, clip) => {
+        return Math.max(maxTime, clip.startTime + (clip.trimEnd - clip.trimStart));
+      }, 0);
+      
+      const newClipDuration = 60; // Full duration of the new video file
+      const newClip: VideoClip = {
+        id: `clip-${Date.now()}`,
+        url: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+        name: "New Clip",
+        duration: newClipDuration, 
+        startTime: lastClipEndTime, 
+        trimStart: 0,
+        trimEnd: newClipDuration, // Add the full clip
+        trackIndex: targetTrackIndex,
+      };
+
+      const newClips = [...clips, newClip];
+      const newDuration = newClips.reduce(
+        (max, clip) =>
+          Math.max(max, clip.startTime + (clip.trimEnd - clip.trimStart)),
+        0
+      );
+
+      return {
+        ...prev,
+        clips: newClips,
+        duration: newDuration,
+      };
+    });
+  };
   
   const playerTime = activeClip
     ? (state.currentTime - activeClip.startTime) + activeClip.trimStart
@@ -125,6 +183,9 @@ const VideoEditor: React.FC = () => {
           duration={state.duration}
           onClipsUpdate={handleClipsUpdate}
           onSeek={handleSeek}
+          onAddClip={handleAddClip}
+          zoom={zoom}
+          onZoomChange={setZoom}
         />
       </div>
     </div>
